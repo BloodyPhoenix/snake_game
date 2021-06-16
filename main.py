@@ -10,21 +10,37 @@ class Snake:
 
     def __init__(self, screen: pygame.display):
         self.block = pygame.image.load("resourses/block.jpg").convert()
-        self.x = 100
-        self.y = 100
+        self.direction = "right"
+        self.length = 6
+        self.x = [40]*self.length
+        self.y = [40]*self.length
         self.screen = screen
 
     def draw(self):
         self.screen.fill(color=(77, 199, 64))
-        self.screen.blit(self.block, (self.x, self.y))
+        for i in range (self.length):
+            self.screen.blit(self.block, (self.x[i], self.y[i]))
         pygame.display.flip()
+
+    def move(self):
+        for i in range(self.length-1, 0, -1):
+            self.x[i] = self.x[i-1]
+            self.y[i] = self.y[i-1]
+        if "right" == self.direction:
+            self.x[0] += 40
+        elif "left" == self.direction:
+            self.x[0] -= 40
+        elif "up" == self.direction:
+            self.y[0] -= 40
+        else:
+            self.y[0] += 40
+        self.draw()
 
 
 class SnakeGame:
 
     def __init__(self):
         pygame.init()
-        self.direction = "right"
         self.surface = pygame.display.set_mode(size=(1000, 700))
         self.surface.fill(color=(77, 199, 64))
         self.snake = Snake(self.surface)
@@ -41,22 +57,14 @@ class SnakeGame:
                     if event.key == K_ESCAPE:
                         running = False
                     elif event.key == K_UP:
-                        self.direction = "up"
+                        self.snake.direction = "up"
                     elif event.key == K_DOWN:
-                        self.direction = "down"
+                        self.snake.direction = "down"
                     elif event.key == K_LEFT:
-                        self.direction = "left"
+                        self.snake.direction = "left"
                     elif event.key == K_RIGHT:
-                        self.direction = "right"
-            if "right" == self.direction:
-                self.snake.x += 10
-            elif "left" == self.direction:
-                self.snake.x -= 10
-            elif "up" == self.direction:
-                self.snake.y -= 10
-            else:
-                self.snake.y += 10
-            self.snake.draw()
+                        self.snake.direction = "right"
+            self.snake.move()
 
 
 if __name__ == "__main__":
