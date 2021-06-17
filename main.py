@@ -30,6 +30,7 @@ class Apple:
         self.y = SIZE * randint(0, self.multipliers[1])
 
     def draw(self):
+        self.screen.fill(color=(77, 199, 64))
         self.screen.blit(self.apple, (self.x, self.y))
         pygame.display.flip()
 
@@ -55,7 +56,6 @@ class Snake:
         self.y += [[]]
 
     def move(self):
-        self.screen.fill(color=(77, 199, 64))
         for i in range(self.length-1, 0, -1):
             self.x[i] = self.x[i-1]
             self.y[i] = self.y[i-1]
@@ -84,13 +84,13 @@ class SnakeGame:
         self.running = True
 
     def _play(self):
+        self.apple.draw()
         self.snake.move()
         self._check_obstacles()
         if self.snake.x[0] == self.apple.x:
             if self.snake.y[0] == self.apple.y:
                 self.apple.change_position()
                 self.snake.grow()
-        self.apple.draw()
 
     def _check_obstacles(self):
         for i in range(1, self.snake.length):
@@ -107,8 +107,31 @@ class SnakeGame:
             self._game_over()
 
     def _game_over(self):
-        self.running = False
-        return self.snake.x
+        self.surface.fill((0, 0, 0))
+        font = pygame.font.SysFont("arial", 30)
+        score = self.snake.length-3
+        label = font.render(f"Игра окончена! Количество съеденных яблок - {score}!", True, (122, 122, 122))
+        self.surface.blit(label, (200, 300))
+        pygame.display.flip()
+        while True:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    self.running = False
+                    return
+                elif event.type == KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        self.running = False
+                        return
+
+    def _pause(self):
+        while True:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    self._game_over()
+                    return
+                elif event.type == KEYDOWN:
+                    if event.key == K_RETURN:
+                        return
 
     def run(self):
         while self.running:
@@ -116,6 +139,8 @@ class SnakeGame:
                 if event.type == QUIT:
                     self._game_over()
                 elif event.type == KEYDOWN:
+                    if event.key == K_RETURN:
+                        self._pause()
                     if event.key == K_ESCAPE:
                         self._game_over()
                     elif event.key == K_UP:
