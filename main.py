@@ -111,7 +111,11 @@ class SnakeGame:
         font = pygame.font.SysFont("arial", 30)
         score = self.snake.length-3
         label = font.render(f"Игра окончена! Количество съеденных яблок - {score}!", True, (122, 122, 122))
+        escape_label = font.render("Чтобы выйти, нажмите клавишу Esc", True, (122, 122, 122))
+        enter_label = font.render("Чтобы сыграть ещё раз, нажмите клавишу Enter", True, (122, 122, 122))
         self.surface.blit(label, (200, 300))
+        self.surface.blit(escape_label, (200, 400))
+        self.surface.blit(enter_label, (200, 500))
         pygame.display.flip()
         while True:
             for event in pygame.event.get():
@@ -121,6 +125,9 @@ class SnakeGame:
                 elif event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         self.running = False
+                        return
+                    if event.key == K_RETURN:
+                        self.snake = Snake(self.surface)
                         return
 
     def _pause(self):
