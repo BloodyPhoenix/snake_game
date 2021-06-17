@@ -76,6 +76,7 @@ class SnakeGame:
         pygame.init()
         self.x = x
         self.y = y
+        self.font = pygame.font.SysFont("arial", 30)
         self.surface = pygame.display.set_mode(size=(self.x, self.y))
         self.apple_multiplier = (get_apple_coordinates_multiplier(self.x, self.y))
         self.surface.fill(color=(77, 199, 64))
@@ -108,11 +109,11 @@ class SnakeGame:
 
     def _game_over(self):
         self.surface.fill((0, 0, 0))
-        font = pygame.font.SysFont("arial", 30)
+
         score = self.snake.length-3
-        label = font.render(f"Игра окончена! Количество съеденных яблок - {score}!", True, (122, 122, 122))
-        escape_label = font.render("Чтобы выйти, нажмите клавишу Esc", True, (122, 122, 122))
-        enter_label = font.render("Чтобы сыграть ещё раз, нажмите клавишу Enter", True, (122, 122, 122))
+        label = self.font.render(f"Игра окончена! Количество съеденных яблок - {score}!", True, (122, 122, 122))
+        escape_label = self.font.render("Чтобы выйти, нажмите клавишу Esc", True, (122, 122, 122))
+        enter_label = self.font.render("Чтобы сыграть ещё раз, нажмите клавишу Enter", True, (122, 122, 122))
         self.surface.blit(label, (200, 300))
         self.surface.blit(escape_label, (200, 400))
         self.surface.blit(enter_label, (200, 500))
@@ -132,6 +133,11 @@ class SnakeGame:
 
     def _pause(self):
         while True:
+            pause_label = self.font.render("Игра на паузе", True, (0, 0, 0))
+            cont_label = self.font.render("Для продолжения нажмите клавишу Enter", False, (0, 0, 0))
+            self.surface.blit(pause_label, (400, 300))
+            self.surface.blit(cont_label, (200, 400))
+            pygame.display.flip()
             for event in pygame.event.get():
                 if event.type == QUIT:
                     self._game_over()
