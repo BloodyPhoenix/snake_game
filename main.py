@@ -39,7 +39,7 @@ class Snake:
     def __init__(self, screen: pygame.display):
         self.block = pygame.image.load("resourses/block.jpg").convert()
         self.direction = "right"
-        self.length = 6
+        self.length = 3
         self.x = [SIZE]*self.length
         self.y = [SIZE]*self.length
         self.screen = screen
@@ -83,50 +83,55 @@ class SnakeGame:
         self.apple = Apple(self.surface, self.apple_multiplier)
         self.running = True
 
-    def play(self):
+    def _play(self):
         self.snake.move()
-        self.check_obstacles()
+        self._check_obstacles()
         if self.snake.x[0] == self.apple.x:
             if self.snake.y[0] == self.apple.y:
                 self.apple.change_position()
                 self.snake.grow()
         self.apple.draw()
 
-    def check_obstacles(self):
+    def _check_obstacles(self):
         for i in range(1, self.snake.length):
             if self.snake.x[i] == self.snake.x[0]:
                 if self.snake.y[i] == self.snake.y[0]:
-                    self.game_over()
+                    self._game_over()
         if self.snake.x[0] > self.x-SIZE:
-            self.game_over()
+            self._game_over()
         if self.snake.y[0] > self.y-SIZE:
-            self.game_over()
+            self._game_over()
         if self.snake.x[0] < 0:
-            self.game_over()
+            self._game_over()
         if self.snake.y[0] < 0:
-            self.game_over()
+            self._game_over()
 
-    def game_over(self):
+    def _game_over(self):
         self.running = False
+        return self.snake.x
 
     def run(self):
         while self.running:
-            time.sleep(0.3)
             for event in pygame.event.get():
                 if event.type == QUIT:
-                    self.running = False
+                    self._game_over()
                 elif event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
-                        self.running = False
+                        self._game_over()
                     elif event.key == K_UP:
-                        self.snake.direction = "up"
+                        if not self.snake.direction == "down":
+                            self.snake.direction = "up"
                     elif event.key == K_DOWN:
-                        self.snake.direction = "down"
+                        if not self.snake.direction == "up":
+                            self.snake.direction = "down"
                     elif event.key == K_LEFT:
-                        self.snake.direction = "left"
+                        if not self.snake.direction == "right":
+                            self.snake.direction = "left"
                     elif event.key == K_RIGHT:
-                        self.snake.direction = "right"
-            self.play()
+                        if not self.snake.direction == "left":
+                            self.snake.direction = "right"
+            self._play()
+            time.sleep(0.3)
 
 
 if __name__ == "__main__":
